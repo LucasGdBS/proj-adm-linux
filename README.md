@@ -2,17 +2,29 @@
 
 Ambiente de monitoramento com balanceamento de carga, banco de dados persistente e stack de observabilidade completa.
 
+## Equipe
+
+| Foto                                                       | Nome                   | GitHub                                                    | Email                                           |
+| ---------------------------------------------------------- | ---------------------- | --------------------------------------------------------- | ----------------------------------------------- |
+| ![Carlos](https://github.com/Carlos3du.png?size=40)        | Carlos Eduardo         | [Carlos3du](https://github.com/Carlos3du)                 | [cepc@cesar.school](mailto:cepc@cesar.school)   |
+| ![Cristina](https://github.com/Criismnaga.png?size=40)     | Cristina Matsunaga     | [Criismnaga](https://github.com/Criismnaga)               | [cm2@cesar.school](mailto:cm2@cesar.school)     |
+| ![Francisco](https://github.com/fantonioluz.png?size=40)   | Francisco Antônio      | [fantonioluz](https://github.com/fantonioluz)             | [fco@cesar.school](mailto:fco@cesar.school)     |
+| ![Gabriel](https://github.com/Gabriel-Chaves0.png?size=40) | Gabriel Chaves         | [Gabriel-Chaves0](https://github.com/Gabriel-Chaves0)     | [gco@cesar.school](mailto:gco@cesar.school)     |
+| ![Lucas](https://github.com/LucasGdBS.png?size=40)         | Lucas Gabriel          | [LucasGdBS](https://github.com/LucasGdBS)                 | [lgbs@cesar.school](mailto:lgbs@cesar.school)   |
+| ![Maria](https://github.com/FernandaFBMarques.png?size=40) | Maria Fernanda Marques | [FernandaFBMarques](https://github.com/FernandaFBMarques) | [mffbm@cesar.school](mailto:mffbm@cesar.school) |
+| ![Thiago](https://github.com/tharaujo17.png?size=40)       | Thiago Henrique        | [tharaujo17](https://github.com/tharaujo17)               | [thas@cesar.school](mailto:thas@cesar.school)   |
+
 ## Arquitetura
 
-```
+```txt
                         ┌─────────────────────────────────────┐
-                        │          Rede Interna Docker         │
-                        │                                      │
-Internet ──► Nginx:80 ──┼──► app1:8000  ◄── Prometheus:9090  │
+                        │          Rede Interna Docker        │
+                        │                                     │
+Internet ──► Nginx:80 ──┼──► app1:8000  ◄── Prometheus:9090   │
                         │──► app2:8000  ◄── cAdvisor:8080     │
-                        │──► Grafana:3000                      │
-                        │         │                            │
-                        │      db:5432 (PostgreSQL)            │
+                        │──► Grafana:3000                     │
+                        │         │                           │
+                        │      db:5432 (PostgreSQL)           │
                         └─────────────────────────────────────┘
 ```
 
@@ -20,15 +32,15 @@ Apenas o Nginx possui porta exposta no host. Todos os demais serviços se comuni
 
 ## Serviços
 
-| Serviço      | Imagem                          | Função                                              |
-|--------------|---------------------------------|-----------------------------------------------------|
-| `nginx`      | `nginx:alpine`                  | Reverse proxy e load balancer                       |
-| `app1`       | build local (`./app`)           | Instância 1 da API FastAPI                          |
-| `app2`       | build local (`./app`)           | Instância 2 da API FastAPI                          |
-| `db`         | `postgres:16-alpine`            | Banco de dados PostgreSQL com volume persistente    |
-| `prometheus` | `prom/prometheus`               | Coleta de métricas das apps e dos contêineres       |
-| `grafana`    | `grafana/grafana`               | Visualização de métricas                            |
-| `cadvisor`   | `gcr.io/cadvisor/cadvisor`      | Métricas de CPU e memória dos contêineres           |
+| Serviço      | Imagem                     | Função                                           |
+| ------------ | -------------------------- | ------------------------------------------------ |
+| `nginx`      | `nginx:alpine`             | Reverse proxy e load balancer                    |
+| `app1`       | build local (`./app`)      | Instância 1 da API FastAPI                       |
+| `app2`       | build local (`./app`)      | Instância 2 da API FastAPI                       |
+| `db`         | `postgres:16-alpine`       | Banco de dados PostgreSQL com volume persistente |
+| `prometheus` | `prom/prometheus`          | Coleta de métricas das apps e dos contêineres    |
+| `grafana`    | `grafana/grafana`          | Visualização de métricas                         |
+| `cadvisor`   | `gcr.io/cadvisor/cadvisor` | Métricas de CPU e memória dos contêineres        |
 
 ## Pré-requisitos
 
@@ -50,6 +62,7 @@ bash scripts/start-infra.sh
 ```
 
 O script:
+
 1. Verifica se o Docker está rodando
 2. Detecta automaticamente `docker compose` ou `docker-compose`
 3. Detecta se o ambiente já está em execução (evita subir em duplicata)
@@ -74,22 +87,22 @@ docker compose logs -f app1
 
 ## Acesso
 
-| Serviço  | URL                          | Credenciais              |
-|----------|------------------------------|--------------------------|
-| API      | http://localhost             | —                        |
-| Grafana  | http://localhost/grafana/    | admin / admin            |
+| Serviço | URL                       | Credenciais   |
+| ------- | ------------------------- | ------------- |
+| API     | http://localhost          | —             |
+| Grafana | http://localhost/grafana/ | admin / admin |
 
 > O Grafana já sobe com o Prometheus configurado como datasource padrão (provisionamento automático em `grafana/provisioning/`).
 
 ## API — Endpoints
 
-| Método | Path      | Descrição                                           |
-|--------|-----------|-----------------------------------------------------|
-| GET    | `/`       | Mensagem de boas-vindas com o hostname da instância |
-| GET    | `/health` | Status da aplicação e conectividade com o banco     |
-| GET    | `/items`  | Lista todos os itens do banco                       |
-| POST   | `/items`  | Cria um novo item (`{"name": "..."}`)               |
-| GET    | `/metrics`| Métricas Prometheus (contagem de requisições)       |
+| Método | Path       | Descrição                                           |
+| ------ | ---------- | --------------------------------------------------- |
+| GET    | `/`        | Mensagem de boas-vindas com o hostname da instância |
+| GET    | `/health`  | Status da aplicação e conectividade com o banco     |
+| GET    | `/items`   | Lista todos os itens do banco                       |
+| POST   | `/items`   | Cria um novo item (`{"name": "..."}`)               |
+| GET    | `/metrics` | Métricas Prometheus (contagem de requisições)       |
 
 ### Métricas expostas pela API
 
@@ -114,12 +127,12 @@ http_request_duration_seconds_bucket{handler="/",le="0.005"} 39
 
 O Prometheus coleta métricas a cada 15 segundos dos seguintes alvos (configurados em `prometheus/prometheus.yml`):
 
-| Job              | Alvo             | O que coleta                        |
-|------------------|------------------|-------------------------------------|
-| `fastapi-app1`   | `app1:8000`      | Requisições HTTP, latência          |
-| `fastapi-app2`   | `app2:8000`      | Requisições HTTP, latência          |
-| `cadvisor`       | `cadvisor:8080`  | CPU, memória e I/O dos contêineres  |
-| `prometheus`     | `localhost:9090` | Auto-monitoramento do Prometheus    |
+| Job            | Alvo             | O que coleta                       |
+| -------------- | ---------------- | ---------------------------------- |
+| `fastapi-app1` | `app1:8000`      | Requisições HTTP, latência         |
+| `fastapi-app2` | `app2:8000`      | Requisições HTTP, latência         |
+| `cadvisor`     | `cadvisor:8080`  | CPU, memória e I/O dos contêineres |
+| `prometheus`   | `localhost:9090` | Auto-monitoramento do Prometheus   |
 
 ### cAdvisor
 
@@ -169,12 +182,12 @@ histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))
 
 Definidas no `.env` e carregadas automaticamente pelo Compose:
 
-| Variável            | Descrição                        | Padrão  |
-|---------------------|----------------------------------|---------|
-| `POSTGRES_USER`     | Usuário do banco                 | `admin` |
-| `POSTGRES_PASSWORD` | Senha do banco                   | `secret`|
-| `POSTGRES_DB`       | Nome do banco de dados           | `appdb` |
-| `GRAFANA_PASSWORD`  | Senha do admin do Grafana        | `admin` |
+| Variável            | Descrição                 | Padrão   |
+| ------------------- | ------------------------- | -------- |
+| `POSTGRES_USER`     | Usuário do banco          | `admin`  |
+| `POSTGRES_PASSWORD` | Senha do banco            | `secret` |
+| `POSTGRES_DB`       | Nome do banco de dados    | `appdb`  |
+| `GRAFANA_PASSWORD`  | Senha do admin do Grafana | `admin`  |
 
 > Em produção, não versione o `.env`. Use secrets do Docker ou variáveis de ambiente do sistema.
 
